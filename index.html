@@ -353,6 +353,26 @@
   .install-card span { font-size: 13px; line-height: 1.6; color: var(--ink-soft); }
   @media (max-width: 480px) { .install-cards { grid-template-columns: 1fr; } }
 
+  /* ---------- usage stats ---------- */
+  .stat-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; }
+  .tile { background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px; padding: 10px 12px; }
+  .tile .v { font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .tile .l { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .stat-sub { font-size: 13px; font-weight: 700; color: var(--ink-soft); margin: 18px 0 6px; letter-spacing: .04em; }
+  .mini-chart { display: flex; align-items: flex-end; gap: 4px; }
+  .ch-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; }
+  .ch-val { font-size: 10.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; height: 13px; }
+  .ch-bar { width: 100%; max-width: 22px; background: var(--accent); opacity: .5; border-radius: 3px 3px 0 0; min-height: 2px; }
+  .ch-bar.today { opacity: 1; }
+  .ch-day { font-size: 10px; color: var(--ink-soft); height: 12px; }
+  .tw-row { display: flex; align-items: center; gap: 8px; margin: 5px 0; }
+  .tw-word { width: 58px; flex-shrink: 0; font-size: 14px; font-weight: 600; text-align: right; }
+  .tw-track { flex: 1; }
+  .tw-bar { display: block; height: 13px; background: var(--accent); opacity: .72; border-radius: 0 4px 4px 0; }
+  .tw-n { width: 34px; font-size: 12.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .new-words { display: flex; flex-wrap: wrap; gap: 6px; }
+  .nw-chip { border: 1.5px solid var(--cat-play-bd); background: var(--cat-play-bg); color: var(--cat-play-ink); border-radius: 999px; padding: 3px 10px; font-size: 13.5px; font-weight: 600; }
+
   /* ---------- card editor modal ---------- */
   #editor {
     position: fixed; inset: 0; z-index: 60;
@@ -430,6 +450,27 @@
       <h3>📷 照片 & 🎤 真人语音</h3>
       <p>在下面「管理图卡」里<strong>点任意一个词语</strong>，就能给这张卡拍照片、录家人的声音。孩子点卡时会优先播放录音；没录音的卡用机器朗读。</p>
       <p class="note">照片和录音只保存在本手机上。妈妈休息好了，用她的手机（或这台）打开录一遍就有她的声音了，随时可重录覆盖。</p>
+    </section>
+
+    <section>
+      <h3>📊 使用记录</h3>
+      <div class="stat-tiles">
+        <div class="tile"><div class="v" id="stToday">0</div><div class="l">今天点卡</div></div>
+        <div class="tile"><div class="v" id="stTodaySen">0</div><div class="l">今天说句子</div></div>
+        <div class="tile"><div class="v" id="stWords7">0</div><div class="l">近7天用过的词</div></div>
+        <div class="tile"><div class="v" id="stLen7">–</div><div class="l">近7天平均句长</div></div>
+      </div>
+      <div class="stat-sub">近 14 天点卡次数</div>
+      <div class="mini-chart" id="chart14"></div>
+      <div class="stat-sub">常用词 Top 10（近 7 天）</div>
+      <div id="topWords"></div>
+      <div class="stat-sub">本周新出现的词</div>
+      <div id="newWords" class="new-words"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="csvBtn">导出 CSV</button>
+        <button class="btn danger" id="clearLogBtn">清空记录</button>
+      </div>
+      <p class="note" style="margin-top:8px">记录包含大人示范时的点击。数据只存在本手机、不上传；导出的 CSV 可以发给治疗师或自己分析。</p>
     </section>
 
     <section>
@@ -583,8 +624,12 @@
   const mediaMap = new Map();
   const dbp = new Promise((resolve) => {
     if (!('indexedDB' in window)) { resolve(null); return; }
-    const req = indexedDB.open('ddshuo-media', 1);
-    req.onupgradeneeded = () => req.result.createObjectStore('media');
+    const req = indexedDB.open('ddshuo-media', 2);
+    req.onupgradeneeded = () => {
+      const db = req.result;
+      if (!db.objectStoreNames.contains('media')) db.createObjectStore('media');
+      if (!db.objectStoreNames.contains('log')) db.createObjectStore('log', { autoIncrement: true });
+    };
     req.onsuccess = () => resolve(req.result);
     req.onerror = () => resolve(null);
   });
@@ -611,6 +656,27 @@
     });
   }
   function mediaOf(id) { return mediaMap.get(id) || {}; }
+
+  /* ---------- usage log ---------- */
+  async function logEvent(entry) {
+    const db = await dbp;
+    if (!db) return;
+    try { db.transaction('log', 'readwrite').objectStore('log').add(entry); } catch (e) {}
+  }
+  async function readLog() {
+    const db = await dbp;
+    if (!db) return [];
+    return new Promise((resolve) => {
+      const out = [];
+      let cur;
+      try { cur = db.transaction('log').objectStore('log').openCursor(); } catch (e) { resolve(out); return; }
+      cur.onsuccess = () => {
+        const c = cur.result;
+        if (c) { out.push(c.value); c.continue(); } else resolve(out);
+      };
+      cur.onerror = () => resolve(out);
+    });
+  }
 
   /* ---------- speech ---------- */
   let zhVoice = null;
@@ -740,6 +806,7 @@
       d.onclick = () => {
         stopAll();
         playCard(card);
+        logEvent({ ts: Date.now(), type: 'tap', w: card.t, c: cat.id });
         d.classList.add('speaking');
         setTimeout(() => d.classList.remove('speaking'), 600);
         if (sentence.length < 6) { sentence.push({ id: card.id, e: card.e, t: card.t, cls: cat.cls }); renderStrip(); }
@@ -767,7 +834,11 @@
     stripEl.scrollLeft = stripEl.scrollWidth;
   }
 
-  speakBtn.onclick = () => { if (sentence.length) playSentence(sentence.slice()); };
+  speakBtn.onclick = () => {
+    if (!sentence.length) return;
+    logEvent({ ts: Date.now(), type: 'sen', ws: sentence.map(c => c.t) });
+    playSentence(sentence.slice());
+  };
   document.getElementById('undoBtn').onclick = () => { sentence.pop(); renderStrip(); };
   document.getElementById('clearBtn').onclick = () => { sentence = []; renderStrip(); };
 
@@ -798,7 +869,7 @@
   function openSettings() {
     holdEnd();
     settingsEl.classList.add('open');
-    renderManage(); renderAddCat();
+    renderManage(); renderAddCat(); renderStats();
     document.getElementById('rate').value = rate;
     pickVoice();
   }
@@ -1059,6 +1130,110 @@
     if (Object.keys(m).length) mediaMap.set(edCard.id, m); else mediaMap.delete(edCard.id);
     await mediaSave(edCard.id);
     refreshEditor();
+  };
+
+  /* ---------- usage stats ---------- */
+  function dayKey(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+  async function renderStats() {
+    const log = await readLog();
+    const now = new Date();
+    const todayK = dayKey(now);
+    const DAY = 86400000;
+    const t7 = now.getTime() - 7 * DAY;
+    const taps = log.filter(e => e.type === 'tap');
+    const sens = log.filter(e => e.type === 'sen');
+
+    document.getElementById('stToday').textContent = taps.filter(e => dayKey(new Date(e.ts)) === todayK).length;
+    document.getElementById('stTodaySen').textContent = sens.filter(e => dayKey(new Date(e.ts)) === todayK).length;
+    document.getElementById('stWords7').textContent = new Set(taps.filter(e => e.ts >= t7).map(e => e.w)).size;
+    const sen7 = sens.filter(e => e.ts >= t7 && e.ws && e.ws.length);
+    document.getElementById('stLen7').textContent = sen7.length
+      ? (sen7.reduce((s, e) => s + e.ws.length, 0) / sen7.length).toFixed(1) : '–';
+
+    /* 近14天柱状图：单色系，当天高亮，只给峰值和当天标数值 */
+    const byDay = {};
+    taps.forEach(e => { const k = dayKey(new Date(e.ts)); byDay[k] = (byDay[k] || 0) + 1; });
+    const days = [];
+    for (let i = 13; i >= 0; i--) {
+      const d = new Date(now.getTime() - i * DAY);
+      days.push({ d, n: byDay[dayKey(d)] || 0 });
+    }
+    const max = Math.max(1, ...days.map(x => x.n));
+    const chart = document.getElementById('chart14');
+    chart.innerHTML = '';
+    days.forEach((x, i) => {
+      const col = document.createElement('div');
+      col.className = 'ch-col';
+      col.title = (x.d.getMonth() + 1) + '月' + x.d.getDate() + '日：' + x.n + ' 次';
+      const val = document.createElement('div');
+      val.className = 'ch-val';
+      val.textContent = ((x.n === max && x.n > 0) || i === days.length - 1) ? x.n : '';
+      const bar = document.createElement('div');
+      bar.className = 'ch-bar' + (i === days.length - 1 ? ' today' : '');
+      bar.style.height = Math.max(2, Math.round(64 * x.n / max)) + 'px';
+      const day = document.createElement('div');
+      day.className = 'ch-day';
+      day.textContent = i % 2 === 0 ? String(x.d.getDate()) : '';
+      col.appendChild(val); col.appendChild(bar); col.appendChild(day);
+      chart.appendChild(col);
+    });
+
+    /* 常用词 Top 10（近7天） */
+    const cnt = {};
+    taps.filter(e => e.ts >= t7).forEach(e => { cnt[e.w] = (cnt[e.w] || 0) + 1; });
+    const top = Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    const tw = document.getElementById('topWords');
+    tw.innerHTML = top.length ? '' : '<p class="note">近 7 天还没有点卡记录</p>';
+    const tmax = top.length ? top[0][1] : 1;
+    top.forEach(([w, n]) => {
+      const row = document.createElement('div'); row.className = 'tw-row';
+      const wd = document.createElement('span'); wd.className = 'tw-word'; wd.textContent = w;
+      const track = document.createElement('span'); track.className = 'tw-track';
+      const bar = document.createElement('span'); bar.className = 'tw-bar';
+      bar.style.width = Math.max(4, Math.round(100 * n / tmax)) + '%';
+      track.appendChild(bar);
+      const num = document.createElement('span'); num.className = 'tw-n'; num.textContent = n;
+      row.appendChild(wd); row.appendChild(track); row.appendChild(num);
+      tw.appendChild(row);
+    });
+
+    /* 本周首次出现的词（词汇扩展信号） */
+    const firstSeen = {};
+    taps.forEach(e => { if (!(e.w in firstSeen) || e.ts < firstSeen[e.w]) firstSeen[e.w] = e.ts; });
+    const fresh = Object.entries(firstSeen).filter(([, ts]) => ts >= t7).map(([w]) => w);
+    const nw = document.getElementById('newWords');
+    nw.innerHTML = fresh.length ? '' : '<p class="note">暂无</p>';
+    fresh.forEach(w => {
+      const s = document.createElement('span'); s.className = 'nw-chip'; s.textContent = w;
+      nw.appendChild(s);
+    });
+  }
+
+  document.getElementById('csvBtn').onclick = async () => {
+    const log = await readLog();
+    const rows = [['时间', '类型', '内容', '类别']];
+    log.forEach(e => {
+      const t = new Date(e.ts).toLocaleString('zh-CN', { hour12: false });
+      if (e.type === 'tap') rows.push([t, '点卡', e.w, e.c || '']);
+      else rows.push([t, '整句', (e.ws || []).join(' '), '']);
+    });
+    const csv = '\ufeff' + rows.map(r => r.map(x => '"' + String(x).replace(/"/g, '""') + '"').join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'diandianshuo-log.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  };
+  document.getElementById('clearLogBtn').onclick = async () => {
+    if (!confirm('确定清空所有使用记录吗？建议先导出 CSV 备份。')) return;
+    const db = await dbp;
+    if (db) await new Promise(res => {
+      const r = db.transaction('log', 'readwrite').objectStore('log').clear();
+      r.onsuccess = res; r.onerror = res;
+    });
+    renderStats();
   };
 
   /* word text edit */
