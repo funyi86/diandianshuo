@@ -1,4 +1,9 @@
-const CACHE = 'ddshuo-v1';
+const CACHE = 'ddshuo-v2';
+const PICTOS = [
+  'i', 'want', 'no', 'more', 'help', 'done', 'hug', 'bye',
+  'pee', 'poop', 'washhands', 'bath', 'sleep', 'teeth', 'dress', 'goout',
+  'eat', 'drink', 'play', 'draw', 'read',
+].map((n) => './pictos/' + n + '.png');
 const ASSETS = [
   './',
   './index.html',
@@ -6,6 +11,7 @@ const ASSETS = [
   './icon-192.png',
   './icon-512.png',
   './apple-touch-icon.png',
+  ...PICTOS,
 ];
 
 self.addEventListener('install', (e) => {

@@ -165,6 +165,7 @@
   @keyframes chip-in { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   .chip .e { font-size: 25px; line-height: 1.15; }
   .chip img.ph { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: block; }
+  .chip img.picto { width: 30px; height: 30px; border-radius: 50%; object-fit: contain; display: block; background: #fff; padding: 2px; }
   .chip .t { font-size: 13px; font-weight: 700; }
   .strip-btns { display: flex; gap: 9px; align-items: center; }
   #speakBtn {
@@ -258,6 +259,7 @@
     overflow: hidden;
   }
   .card .badge img.ph { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .badge img.picto { width: 100%; height: 100%; object-fit: contain; display: block; background: #fff; padding: 7%; }
   .card .e { font-size: 40px; line-height: 1; transform: translateY(1px); }
   .card .t { font-size: 19px; font-weight: 800; letter-spacing: .03em; }
   .card.cat-core   { background: linear-gradient(180deg, var(--cat-core-bg), var(--cat-core-bg2));     border-color: var(--cat-core-bd);   color: var(--cat-core-ink);   box-shadow: 0 5px 12px var(--cat-core-sh); }
@@ -485,6 +487,11 @@
         <li><strong>这只是辅助工具，</strong>不能替代言语治疗和康复课程。可以把这个板子给他的治疗师看，请他们建议词汇。</li>
       </ol>
     </section>
+
+    <section>
+      <h3>图标来源</h3>
+      <p class="note">部分图卡符号来自 ARASAAC（arasaac.org），作者 Sergio Palao，版权归西班牙阿拉贡政府（Government of Aragón）所有，依 CC BY-NC-SA 许可用于非商业用途。The pictographic symbols used are the property of the Government of Aragón and have been created by Sergio Palao for ARASAAC, that distributes them under Creative Commons License BY-NC-SA.</p>
+    </section>
   </div>
 </div>
 
@@ -673,11 +680,30 @@
   const stripEl = document.getElementById('strip');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // 词语 → ARASAAC 图标（用户照片优先于图标，图标加载失败则回退 emoji）
+  const PICTO = {
+    '我': 'pictos/i.png', '要': 'pictos/want.png', '不要': 'pictos/no.png', '还要': 'pictos/more.png',
+    '帮我': 'pictos/help.png', '好了': 'pictos/done.png', '抱抱': 'pictos/hug.png', '再见': 'pictos/bye.png',
+    '尿尿': 'pictos/pee.png', '便便': 'pictos/poop.png', '洗手': 'pictos/washhands.png', '洗澡': 'pictos/bath.png',
+    '睡觉': 'pictos/sleep.png', '刷牙': 'pictos/teeth.png', '穿衣服': 'pictos/dress.png', '出去': 'pictos/goout.png',
+    '吃饭': 'pictos/eat.png', '喝水': 'pictos/drink.png', '玩': 'pictos/play.png', '画画': 'pictos/draw.png',
+    '看书': 'pictos/read.png',
+  };
   function faceHTML(card, cls) {
     const m = mediaOf(card.id);
     if (m.photo) {
       const img = document.createElement('img');
       img.className = 'ph'; img.alt = card.t; img.src = m.photo;
+      return img;
+    }
+    if (PICTO[card.t]) {
+      const img = document.createElement('img');
+      img.className = 'picto'; img.alt = card.t; img.src = PICTO[card.t];
+      img.onerror = () => {
+        const s = document.createElement('span');
+        s.className = 'e'; s.textContent = card.e;
+        img.replaceWith(s);
+      };
       return img;
     }
     const s = document.createElement('span');
@@ -830,9 +856,10 @@
         chip.className = 'm-chip';
         const open = document.createElement('span');
         open.className = 'm-open';
-        if (md.photo) {
+        if (md.photo || PICTO[card.t]) {
           const img = document.createElement('img');
-          img.className = 'ph'; img.src = md.photo; img.alt = '';
+          img.className = 'ph'; img.src = md.photo || PICTO[card.t]; img.alt = '';
+          if (!md.photo) { img.style.objectFit = 'contain'; img.style.background = '#fff'; }
           open.appendChild(img);
         } else {
           const em = document.createElement('span');
