@@ -1,0 +1,1058 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>点点说 · 图卡沟通板</title>
+<meta name="description" content="点图卡，说出来 — 幼儿辅助沟通板">
+<meta name="theme-color" content="#FAF6EE">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="点点说">
+<link rel="manifest" href="./manifest.json">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<link rel="icon" type="image/png" href="./icon-192.png">
+</head>
+<body>
+<style>
+  :root {
+    --ground: #FAF6EE;
+    --ground-deep: #F1EADD;
+    --panel: #FFFFFF;
+    --ink: #33302B;
+    --ink-soft: #7A7264;
+    --line: #E7DFCF;
+    --accent: #3E9B62;
+    --accent-deep: #2F7F4E;
+    --accent-ink: #FFFFFF;
+    --danger: #C25450;
+    --rec: #D64541;
+    --shadow: 0 2px 10px rgba(92, 78, 50, .10);
+
+    --cat-core-bg: #FFF3C4;   --cat-core-bg2: #FFE28A;   --cat-core-bd: #EBC65E;   --cat-core-ink: #5A4404;   --cat-core-sh: rgba(214, 168, 46, .30);
+    --cat-people-bg: #FFE3C4; --cat-people-bg2: #FFC98F; --cat-people-bd: #ECAC64; --cat-people-ink: #5C3A0C; --cat-people-sh: rgba(219, 148, 66, .28);
+    --cat-food-bg: #FFDCCE;   --cat-food-bg2: #FFB99F;   --cat-food-bd: #EC9273;   --cat-food-ink: #61301A;   --cat-food-sh: rgba(222, 116, 79, .28);
+    --cat-play-bg: #DDF2CC;   --cat-play-bg2: #B4E39A;   --cat-play-bd: #85C468;   --cat-play-ink: #24500F;   --cat-play-sh: rgba(104, 168, 68, .28);
+    --cat-daily-bg: #D6EBFB;  --cat-daily-bg2: #A9D4F3;  --cat-daily-bd: #74AEDC;  --cat-daily-ink: #123C5C;  --cat-daily-sh: rgba(74, 138, 190, .28);
+    --cat-feel-bg: #FBDCE9;   --cat-feel-bg2: #F4B8D2;   --cat-feel-bd: #D98BAE;   --cat-feel-ink: #5C1E3C;   --cat-feel-sh: rgba(200, 104, 148, .28);
+
+    --badge: rgba(255, 255, 255, .72);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #211E19;
+      --ground-deep: #1A1814;
+      --panel: #2C2822;
+      --ink: #F1EBE0;
+      --ink-soft: #A79D8D;
+      --line: #3E382D;
+      --accent: #4FB474;
+      --accent-deep: #3E9B62;
+      --accent-ink: #0E2418;
+      --danger: #E07A76;
+      --rec: #E0625E;
+      --shadow: 0 2px 10px rgba(0, 0, 0, .40);
+
+      --cat-core-bg: #52461A;   --cat-core-bg2: #3E350F;   --cat-core-bd: #857231;   --cat-core-ink: #F7E7A9;   --cat-core-sh: rgba(0,0,0,.35);
+      --cat-people-bg: #553F1E; --cat-people-bg2: #402E12; --cat-people-bd: #8A6A3C; --cat-people-ink: #FFE1B7; --cat-people-sh: rgba(0,0,0,.35);
+      --cat-food-bg: #563225;   --cat-food-bg2: #402318;   --cat-food-bd: #8D5A45;   --cat-food-ink: #FFD4C0;   --cat-food-sh: rgba(0,0,0,.35);
+      --cat-play-bg: #2E4823;   --cat-play-bg2: #213619;   --cat-play-bd: #547A45;   --cat-play-ink: #D2EFC2;   --cat-play-sh: rgba(0,0,0,.35);
+      --cat-daily-bg: #213F57;  --cat-daily-bg2: #172E40;  --cat-daily-bd: #436B92;  --cat-daily-ink: #C9E5FA;  --cat-daily-sh: rgba(0,0,0,.35);
+      --cat-feel-bg: #50273D;   --cat-feel-bg2: #3B1C2D;   --cat-feel-bd: #814B67;   --cat-feel-ink: #FAD5E5;   --cat-feel-sh: rgba(0,0,0,.35);
+
+      --badge: rgba(255, 255, 255, .10);
+    }
+  }
+  :root[data-theme="light"] {
+    --ground: #FAF6EE; --ground-deep: #F1EADD; --panel: #FFFFFF; --ink: #33302B; --ink-soft: #7A7264;
+    --line: #E7DFCF; --accent: #3E9B62; --accent-deep: #2F7F4E; --accent-ink: #FFFFFF; --danger: #C25450; --rec: #D64541;
+    --shadow: 0 2px 10px rgba(92, 78, 50, .10);
+    --cat-core-bg: #FFF3C4;   --cat-core-bg2: #FFE28A;   --cat-core-bd: #EBC65E;   --cat-core-ink: #5A4404;   --cat-core-sh: rgba(214, 168, 46, .30);
+    --cat-people-bg: #FFE3C4; --cat-people-bg2: #FFC98F; --cat-people-bd: #ECAC64; --cat-people-ink: #5C3A0C; --cat-people-sh: rgba(219, 148, 66, .28);
+    --cat-food-bg: #FFDCCE;   --cat-food-bg2: #FFB99F;   --cat-food-bd: #EC9273;   --cat-food-ink: #61301A;   --cat-food-sh: rgba(222, 116, 79, .28);
+    --cat-play-bg: #DDF2CC;   --cat-play-bg2: #B4E39A;   --cat-play-bd: #85C468;   --cat-play-ink: #24500F;   --cat-play-sh: rgba(104, 168, 68, .28);
+    --cat-daily-bg: #D6EBFB;  --cat-daily-bg2: #A9D4F3;  --cat-daily-bd: #74AEDC;  --cat-daily-ink: #123C5C;  --cat-daily-sh: rgba(74, 138, 190, .28);
+    --cat-feel-bg: #FBDCE9;   --cat-feel-bg2: #F4B8D2;   --cat-feel-bd: #D98BAE;   --cat-feel-ink: #5C1E3C;   --cat-feel-sh: rgba(200, 104, 148, .28);
+    --badge: rgba(255, 255, 255, .72);
+  }
+  :root[data-theme="dark"] {
+    --ground: #211E19; --ground-deep: #1A1814; --panel: #2C2822; --ink: #F1EBE0; --ink-soft: #A79D8D;
+    --line: #3E382D; --accent: #4FB474; --accent-deep: #3E9B62; --accent-ink: #0E2418; --danger: #E07A76; --rec: #E0625E;
+    --shadow: 0 2px 10px rgba(0, 0, 0, .40);
+    --cat-core-bg: #52461A;   --cat-core-bg2: #3E350F;   --cat-core-bd: #857231;   --cat-core-ink: #F7E7A9;   --cat-core-sh: rgba(0,0,0,.35);
+    --cat-people-bg: #553F1E; --cat-people-bg2: #402E12; --cat-people-bd: #8A6A3C; --cat-people-ink: #FFE1B7; --cat-people-sh: rgba(0,0,0,.35);
+    --cat-food-bg: #563225;   --cat-food-bg2: #402318;   --cat-food-bd: #8D5A45;   --cat-food-ink: #FFD4C0;   --cat-food-sh: rgba(0,0,0,.35);
+    --cat-play-bg: #2E4823;   --cat-play-bg2: #213619;   --cat-play-bd: #547A45;   --cat-play-ink: #D2EFC2;   --cat-play-sh: rgba(0,0,0,.35);
+    --cat-daily-bg: #213F57;  --cat-daily-bg2: #172E40;  --cat-daily-bd: #436B92;  --cat-daily-ink: #C9E5FA;  --cat-daily-sh: rgba(0,0,0,.35);
+    --cat-feel-bg: #50273D;   --cat-feel-bg2: #3B1C2D;   --cat-feel-bd: #814B67;   --cat-feel-ink: #FAD5E5;   --cat-feel-sh: rgba(0,0,0,.35);
+    --badge: rgba(255, 255, 255, .10);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    display: flex;
+    flex-direction: column;
+    overscroll-behavior: none;
+  }
+
+  /* ---------- header ---------- */
+  header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px 6px;
+  }
+  .logo { display: flex; align-items: baseline; gap: 8px; }
+  .app-name { font-size: 20px; font-weight: 800; letter-spacing: .06em; }
+  .logo .dots { display: inline-flex; gap: 4px; align-self: center; }
+  .logo .dots i { width: 8px; height: 8px; border-radius: 50%; }
+  .logo .dots i:nth-child(1) { background: var(--cat-core-bg2); }
+  .logo .dots i:nth-child(2) { background: var(--cat-play-bg2); }
+  .logo .dots i:nth-child(3) { background: var(--cat-daily-bg2); }
+  .app-sub { font-size: 12px; color: var(--ink-soft); letter-spacing: .08em; }
+  .spacer { flex: 1; }
+  #lockBtn {
+    position: relative;
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1.5px solid var(--line); background: var(--panel);
+    font-size: 17px; cursor: pointer; color: var(--ink);
+    display: grid; place-items: center;
+    box-shadow: var(--shadow);
+  }
+  #lockBtn .ring {
+    position: absolute; inset: -3px; border-radius: 50%;
+    background: conic-gradient(var(--accent) calc(var(--p, 0) * 1%), transparent 0);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 3px));
+    pointer-events: none;
+  }
+
+  /* ---------- sentence strip ---------- */
+  .strip-wrap {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 16px 12px;
+  }
+  #strip {
+    flex: 1;
+    align-self: stretch;
+    min-height: 82px;
+    background: var(--panel);
+    border: 1.5px solid var(--line);
+    border-radius: 22px;
+    box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 12px;
+    overflow-x: auto;
+  }
+  #strip::-webkit-scrollbar { display: none; }
+  #strip .hint { color: var(--ink-soft); font-size: 14.5px; padding-left: 6px; letter-spacing: .02em; }
+  .chip {
+    flex-shrink: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-width: 60px; padding: 5px 9px;
+    border-radius: 14px;
+    border-width: 1.5px; border-style: solid;
+    cursor: pointer;
+    animation: chip-in .18s ease both;
+  }
+  @keyframes chip-in { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .chip .e { font-size: 25px; line-height: 1.15; }
+  .chip img.ph { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: block; }
+  .chip .t { font-size: 13px; font-weight: 700; }
+  .strip-btns { display: flex; gap: 9px; align-items: center; }
+  #speakBtn {
+    width: 72px; height: 72px; border-radius: 50%;
+    border: none; font-size: 30px; cursor: pointer;
+    display: grid; place-items: center;
+    color: var(--accent-ink);
+    background: linear-gradient(180deg, var(--accent), var(--accent-deep));
+    box-shadow: 0 5px 14px rgba(47, 127, 78, .35);
+    transition: transform .1s ease;
+  }
+  #speakBtn:active { transform: scale(.92); }
+  #speakBtn.talking { animation: talk-pulse 1s ease infinite; }
+  @keyframes talk-pulse {
+    0%, 100% { box-shadow: 0 5px 14px rgba(47, 127, 78, .35), 0 0 0 0 rgba(62, 155, 98, .45); }
+    50%      { box-shadow: 0 5px 14px rgba(47, 127, 78, .35), 0 0 0 12px rgba(62, 155, 98, 0); }
+  }
+  .mini-col { display: flex; flex-direction: column; gap: 8px; }
+  .mini-col button {
+    width: 38px; height: 38px; border-radius: 50%;
+    border: 1.5px solid var(--line); background: var(--panel); color: var(--ink-soft);
+    font-size: 15px; cursor: pointer;
+    display: grid; place-items: center;
+    box-shadow: var(--shadow);
+  }
+
+  /* ---------- tabs ---------- */
+  nav {
+    display: flex; gap: 8px;
+    padding: 2px 16px 12px;
+    overflow-x: auto;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1.5px solid var(--line);
+    background: var(--panel); color: var(--ink-soft);
+    border-radius: 999px;
+    padding: 9px 16px;
+    font-size: 16px; font-weight: 700; font-family: inherit;
+    cursor: pointer;
+    transition: transform .1s ease;
+  }
+  .tab:active { transform: scale(.95); }
+  .tab .ti { font-size: 17px; }
+  .tab.active { border-width: 2px; padding: 8px 15px; }
+  .tab.active.cat-core   { background: linear-gradient(180deg, var(--cat-core-bg), var(--cat-core-bg2));     border-color: var(--cat-core-bd);   color: var(--cat-core-ink);   box-shadow: 0 3px 10px var(--cat-core-sh); }
+  .tab.active.cat-people { background: linear-gradient(180deg, var(--cat-people-bg), var(--cat-people-bg2)); border-color: var(--cat-people-bd); color: var(--cat-people-ink); box-shadow: 0 3px 10px var(--cat-people-sh); }
+  .tab.active.cat-food   { background: linear-gradient(180deg, var(--cat-food-bg), var(--cat-food-bg2));     border-color: var(--cat-food-bd);   color: var(--cat-food-ink);   box-shadow: 0 3px 10px var(--cat-food-sh); }
+  .tab.active.cat-play   { background: linear-gradient(180deg, var(--cat-play-bg), var(--cat-play-bg2));     border-color: var(--cat-play-bd);   color: var(--cat-play-ink);   box-shadow: 0 3px 10px var(--cat-play-sh); }
+  .tab.active.cat-daily  { background: linear-gradient(180deg, var(--cat-daily-bg), var(--cat-daily-bg2));   border-color: var(--cat-daily-bd);  color: var(--cat-daily-ink);  box-shadow: 0 3px 10px var(--cat-daily-sh); }
+  .tab.active.cat-feel   { background: linear-gradient(180deg, var(--cat-feel-bg), var(--cat-feel-bg2));     border-color: var(--cat-feel-bd);   color: var(--cat-feel-ink);   box-shadow: 0 3px 10px var(--cat-feel-sh); }
+
+  /* ---------- card grid ---------- */
+  main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 16px 28px;
+    background:
+      radial-gradient(1200px 300px at 50% -80px, var(--ground-deep), transparent 70%),
+      var(--ground);
+    border-radius: 26px 26px 0 0;
+  }
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 13px;
+    padding-top: 12px;
+  }
+  .card {
+    border-radius: 24px;
+    border-width: 2px; border-style: solid;
+    min-height: 124px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 7px;
+    cursor: pointer;
+    padding: 12px 6px 11px;
+    transition: transform .09s ease;
+    animation: card-in .28s ease both;
+    font-family: inherit;
+  }
+  @keyframes card-in { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .card:active { transform: scale(.93); }
+  .card.speaking { outline: 4px solid var(--accent); outline-offset: 3px; }
+  .card .badge {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--badge);
+    display: grid; place-items: center;
+    box-shadow: inset 0 -2px 6px rgba(0, 0, 0, .06);
+    overflow: hidden;
+  }
+  .card .badge img.ph { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .e { font-size: 40px; line-height: 1; transform: translateY(1px); }
+  .card .t { font-size: 19px; font-weight: 800; letter-spacing: .03em; }
+  .card.cat-core   { background: linear-gradient(180deg, var(--cat-core-bg), var(--cat-core-bg2));     border-color: var(--cat-core-bd);   color: var(--cat-core-ink);   box-shadow: 0 5px 12px var(--cat-core-sh); }
+  .card.cat-people { background: linear-gradient(180deg, var(--cat-people-bg), var(--cat-people-bg2)); border-color: var(--cat-people-bd); color: var(--cat-people-ink); box-shadow: 0 5px 12px var(--cat-people-sh); }
+  .card.cat-food   { background: linear-gradient(180deg, var(--cat-food-bg), var(--cat-food-bg2));     border-color: var(--cat-food-bd);   color: var(--cat-food-ink);   box-shadow: 0 5px 12px var(--cat-food-sh); }
+  .card.cat-play   { background: linear-gradient(180deg, var(--cat-play-bg), var(--cat-play-bg2));     border-color: var(--cat-play-bd);   color: var(--cat-play-ink);   box-shadow: 0 5px 12px var(--cat-play-sh); }
+  .card.cat-daily  { background: linear-gradient(180deg, var(--cat-daily-bg), var(--cat-daily-bg2));   border-color: var(--cat-daily-bd);  color: var(--cat-daily-ink);  box-shadow: 0 5px 12px var(--cat-daily-sh); }
+  .card.cat-feel   { background: linear-gradient(180deg, var(--cat-feel-bg), var(--cat-feel-bg2));     border-color: var(--cat-feel-bd);   color: var(--cat-feel-ink);   box-shadow: 0 5px 12px var(--cat-feel-sh); }
+
+  .chip.cat-core   { background: var(--cat-core-bg);   border-color: var(--cat-core-bd);   color: var(--cat-core-ink); }
+  .chip.cat-people { background: var(--cat-people-bg); border-color: var(--cat-people-bd); color: var(--cat-people-ink); }
+  .chip.cat-food   { background: var(--cat-food-bg);   border-color: var(--cat-food-bd);   color: var(--cat-food-ink); }
+  .chip.cat-play   { background: var(--cat-play-bg);   border-color: var(--cat-play-bd);   color: var(--cat-play-ink); }
+  .chip.cat-daily  { background: var(--cat-daily-bg);  border-color: var(--cat-daily-bd);  color: var(--cat-daily-ink); }
+  .chip.cat-feel   { background: var(--cat-feel-bg);   border-color: var(--cat-feel-bd);   color: var(--cat-feel-ink); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card, .chip, .tab, #speakBtn { animation: none; transition: none; }
+    .card:active, .tab:active, #speakBtn:active { transform: none; }
+  }
+  @media (max-width: 420px) {
+    .app-sub { display: none; }
+    #grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .card { min-height: 116px; border-radius: 20px; }
+    .card .badge { width: 56px; height: 56px; }
+    .card .e { font-size: 35px; }
+    .card .t { font-size: 17px; }
+    #speakBtn { width: 64px; height: 64px; font-size: 26px; }
+  }
+
+  /* ---------- settings ---------- */
+  #settings {
+    position: fixed; inset: 0;
+    background: var(--ground);
+    z-index: 50;
+    display: none;
+    flex-direction: column;
+    overflow-y: auto;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  #settings.open { display: flex; }
+  .set-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 14px 18px; border-bottom: 1.5px solid var(--line);
+    position: sticky; top: 0; background: var(--ground); z-index: 2;
+  }
+  .set-head h2 { margin: 0; font-size: 18px; }
+  .set-body { padding: 16px 18px 44px; max-width: 640px; width: 100%; margin: 0 auto; }
+  .set-body section { margin-bottom: 28px; }
+  .set-body h3 { font-size: 15px; margin: 0 0 10px; letter-spacing: .06em; }
+  .set-body p, .set-body li { font-size: 14px; line-height: 1.75; color: var(--ink-soft); }
+  .set-body ol { padding-left: 20px; margin: 6px 0; }
+  .set-body ol li { margin-bottom: 8px; }
+  .btn {
+    border: 1.5px solid var(--line); background: var(--panel); color: var(--ink);
+    border-radius: 12px; padding: 10px 16px; font-size: 15px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+  }
+  .btn.primary { background: linear-gradient(180deg, var(--accent), var(--accent-deep)); border-color: var(--accent-deep); color: var(--accent-ink); }
+  .btn.danger { color: var(--danger); border-color: var(--danger); }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  input[type="text"], select {
+    border: 1.5px solid var(--line); background: var(--panel); color: var(--ink);
+    border-radius: 12px; padding: 10px 12px; font-size: 16px; font-family: inherit;
+  }
+  input[type="range"] { accent-color: var(--accent); width: 200px; }
+  .manage-cat { margin-bottom: 14px; }
+  .manage-cat .cat-label { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  .manage-cards { display: flex; flex-wrap: wrap; gap: 8px; }
+  .m-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 1.5px solid var(--line); background: var(--panel);
+    border-radius: 999px; padding: 5px 6px 5px 10px; font-size: 14px; font-weight: 600;
+  }
+  .m-chip .m-open { cursor: pointer; display: inline-flex; align-items: center; gap: 5px; }
+  .m-chip img.ph { width: 22px; height: 22px; border-radius: 50%; object-fit: cover; }
+  .m-chip .has-rec { font-size: 11px; }
+  .m-chip button.del {
+    border: none; background: var(--danger); color: #fff;
+    width: 22px; height: 22px; border-radius: 50%; font-size: 12px; cursor: pointer;
+    display: grid; place-items: center; line-height: 1;
+  }
+  .note { font-size: 12.5px; color: var(--ink-soft); }
+  .install-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .install-card {
+    background: var(--panel); border: 1.5px solid var(--line); border-radius: 14px;
+    padding: 12px 14px;
+  }
+  .install-card b { font-size: 14px; display: block; margin-bottom: 4px; }
+  .install-card span { font-size: 13px; line-height: 1.6; color: var(--ink-soft); }
+  @media (max-width: 480px) { .install-cards { grid-template-columns: 1fr; } }
+
+  /* ---------- card editor modal ---------- */
+  #editor {
+    position: fixed; inset: 0; z-index: 60;
+    background: rgba(0, 0, 0, .45);
+    display: none; align-items: flex-end; justify-content: center;
+  }
+  #editor.open { display: flex; }
+  .ed-panel {
+    background: var(--ground);
+    border-radius: 24px 24px 0 0;
+    width: 100%; max-width: 560px;
+    padding: 20px 20px 34px;
+    max-height: 88vh; overflow-y: auto;
+  }
+  .ed-top { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .ed-badge {
+    width: 76px; height: 76px; border-radius: 50%; flex-shrink: 0;
+    background: var(--panel); border: 2px solid var(--line);
+    display: grid; place-items: center; overflow: hidden;
+  }
+  .ed-badge .e { font-size: 44px; }
+  .ed-badge img.ph { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ed-word { font-size: 22px; font-weight: 800; }
+  .ed-panel h4 { font-size: 14px; margin: 18px 0 8px; letter-spacing: .05em; color: var(--ink-soft); }
+  #recBtn {
+    width: 100%; padding: 16px; border-radius: 16px;
+    border: 2px solid var(--line); background: var(--panel); color: var(--ink);
+    font-size: 17px; font-weight: 700; font-family: inherit; cursor: pointer;
+    touch-action: none;
+  }
+  #recBtn.recording {
+    background: var(--rec); border-color: var(--rec); color: #fff;
+    animation: rec-pulse 1s ease infinite;
+  }
+  @keyframes rec-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(214, 69, 65, .4); }
+    50%      { box-shadow: 0 0 0 10px rgba(214, 69, 65, 0); }
+  }
+  .ed-close-row { margin-top: 22px; display: flex; gap: 10px; }
+  .ed-close-row .btn { flex: 1; padding: 13px; }
+</style>
+
+<header>
+  <span class="logo">
+    <span class="app-name">点点说</span>
+    <span class="dots"><i></i><i></i><i></i></span>
+    <span class="app-sub">点图卡 · 说出来</span>
+  </span>
+  <span class="spacer"></span>
+  <button id="lockBtn" aria-label="长按进入家长设置" title="长按 1.5 秒进入家长设置">🔒<span class="ring"></span></button>
+</header>
+
+<div class="strip-wrap">
+  <div id="strip" aria-label="句子条"><span class="hint">👇 点图卡，说句话</span></div>
+  <div class="strip-btns">
+    <button id="speakBtn" aria-label="朗读整句">🔊</button>
+    <div class="mini-col">
+      <button id="undoBtn" aria-label="退掉一个">⌫</button>
+      <button id="clearBtn" aria-label="清空">✕</button>
+    </div>
+  </div>
+</div>
+
+<nav id="tabs"></nav>
+<main><div id="grid"></div></main>
+
+<div id="settings" role="dialog" aria-label="家长设置">
+  <div class="set-head">
+    <h2>家长设置</h2>
+    <span class="spacer"></span>
+    <button class="btn primary" id="closeSet">完成，返回孩子模式</button>
+  </div>
+  <div class="set-body">
+    <section>
+      <h3>📷 照片 & 🎤 真人语音</h3>
+      <p>在下面「管理图卡」里<strong>点任意一个词语</strong>，就能给这张卡拍照片、录家人的声音。孩子点卡时会优先播放录音；没录音的卡用机器朗读。</p>
+      <p class="note">照片和录音只保存在本手机上。妈妈休息好了，用她的手机（或这台）打开录一遍就有她的声音了，随时可重录覆盖。</p>
+    </section>
+
+    <section>
+      <h3>语速（机器朗读）</h3>
+      <div class="row">
+        <span class="note">慢</span>
+        <input type="range" id="rate" min="0.6" max="1.2" step="0.05">
+        <span class="note">快</span>
+        <button class="btn" id="testVoice">试听「我要喝水」</button>
+      </div>
+      <p class="note" id="voiceInfo"></p>
+    </section>
+
+    <section>
+      <h3>添加图卡</h3>
+      <div class="row">
+        <select id="addCat"></select>
+        <input type="text" id="addEmoji" placeholder="表情 如 🍇" size="6" maxlength="8">
+        <input type="text" id="addText" placeholder="词语 如 葡萄" size="10" maxlength="8">
+        <button class="btn primary" id="addBtn">添加</button>
+      </div>
+      <p class="note">先加孩子最有动机的东西：最爱吃的、最爱玩的。加完点下面的词语，给它拍张真实照片。</p>
+    </section>
+
+    <section>
+      <h3>管理图卡（点词语 → 加照片/录音；点 × 删除）</h3>
+      <div id="manage"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn danger" id="resetBtn">恢复默认词库</button>
+      </div>
+    </section>
+
+    <section>
+      <h3>装到手机桌面，像 App 一样用</h3>
+      <div class="install-cards">
+        <div class="install-card">
+          <b> iPhone / iPad</b>
+          <span>用 Safari 打开本页 → 点底部「分享」按钮 → 选「添加到主屏幕」。</span>
+        </div>
+        <div class="install-card">
+          <b>🤖 安卓手机（爷爷奶奶）</b>
+          <span>用 Chrome 或系统浏览器打开本页 → 右上角「⋮」菜单 → 选「添加到主屏幕」。</span>
+        </div>
+      </div>
+      <p class="note" style="margin-top:8px">注意：每台手机上的图卡、照片、录音各自保存在本机，不会自动同步。建议各设备图卡位置保持一致——孩子很依赖位置记忆。</p>
+    </section>
+
+    <section>
+      <h3>给家人的使用建议</h3>
+      <ol>
+        <li><strong>一起用，不要单独给他。</strong>大人先示范：自己点「我」「要」「饼干」，读出来，再把饼干拿给自己。孩子是看着学会的。</li>
+        <li><strong>制造表达的机会。</strong>把他想要的东西放在看得见、够不着的地方，拿着手机等他。哪怕他只点一张卡，也马上回应。</li>
+        <li><strong>点了就兑现。</strong>他点「喝水」，你说「哦！你要喝水呀」，然后立刻给水。表达→有用，这个因果链是核心。</li>
+        <li><strong>不强迫开口仿说。</strong>点图表达和口语一样算数。研究一致表明图卡沟通不会阻碍说话，反而常常带动口语。</li>
+        <li><strong>这只是辅助工具，</strong>不能替代言语治疗和康复课程。可以把这个板子给他的治疗师看，请他们建议词汇。</li>
+      </ol>
+    </section>
+  </div>
+</div>
+
+<div id="editor" role="dialog" aria-label="编辑图卡">
+  <div class="ed-panel">
+    <div class="ed-top">
+      <span class="ed-badge" id="edBadge"></span>
+      <div>
+        <div class="ed-word" id="edWord"></div>
+        <div class="note" id="edStatus"></div>
+      </div>
+    </div>
+
+    <h4>照片（拍家里的真实物品，孩子更容易认）</h4>
+    <div class="row">
+      <button class="btn" id="photoBtn">📷 拍照 / 选照片</button>
+      <button class="btn danger" id="photoDelBtn" style="display:none">移除照片</button>
+      <input type="file" id="photoFile" accept="image/*" style="display:none">
+    </div>
+
+    <h4>真人语音（按住说话，松开完成，像发微信语音）</h4>
+    <button id="recBtn">🎤 按住录音</button>
+    <div class="row" style="margin-top:10px">
+      <button class="btn" id="playRecBtn" style="display:none">▶ 试听录音</button>
+      <button class="btn danger" id="recDelBtn" style="display:none">删除录音，用机器音</button>
+    </div>
+    <p class="note" style="margin-top:8px">建议只录词语本身，如「喝水」，1–2 秒，语气清晰愉快。再按住录音即覆盖旧的。</p>
+
+    <h4>词语文字</h4>
+    <div class="row">
+      <input type="text" id="edText" maxlength="8" size="10">
+      <button class="btn" id="edTextSave">保存文字</button>
+    </div>
+
+    <div class="ed-close-row">
+      <button class="btn primary" id="edDone">完成</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORE_DECK = 'ddshuo-deck-v1';
+  const STORE_RATE = 'ddshuo-rate-v1';
+
+  const CAT_ICONS = { core: '⭐', people: '👪', food: '🍎', play: '⚽', daily: '🏠', feel: '❤️' };
+
+  const DEFAULT_DECK = [
+    { id: 'core', name: '常用', cls: 'cat-core', cards: [
+      { e: '👦', t: '我' }, { e: '🙏', t: '要' }, { e: '🙅', t: '不要' }, { e: '➕', t: '还要' },
+      { e: '🆘', t: '帮我' }, { e: '✅', t: '好了' }, { e: '🤗', t: '抱抱' }, { e: '👋', t: '再见' },
+    ]},
+    { id: 'people', name: '人', cls: 'cat-people', cards: [
+      { e: '👨', t: '爸爸' }, { e: '👩', t: '妈妈' }, { e: '👴', t: '爷爷' }, { e: '👵', t: '奶奶' },
+      { e: '🧑‍🏫', t: '老师' },
+    ]},
+    { id: 'food', name: '吃喝', cls: 'cat-food', cards: [
+      { e: '🍚', t: '吃饭' }, { e: '💧', t: '喝水' }, { e: '🥛', t: '牛奶' }, { e: '🍎', t: '苹果' },
+      { e: '🍌', t: '香蕉' }, { e: '🍪', t: '饼干' }, { e: '🍜', t: '面条' }, { e: '🧃', t: '果汁' },
+    ]},
+    { id: 'play', name: '玩', cls: 'cat-play', cards: [
+      { e: '🧸', t: '玩' }, { e: '🧱', t: '积木' }, { e: '⚽', t: '球' }, { e: '🚗', t: '车车' },
+      { e: '🛝', t: '滑梯' }, { e: '🫧', t: '泡泡' }, { e: '🖍️', t: '画画' }, { e: '📖', t: '看书' },
+      { e: '🎵', t: '音乐' },
+    ]},
+    { id: 'daily', name: '日常', cls: 'cat-daily', cards: [
+      { e: '🚽', t: '尿尿' }, { e: '💩', t: '便便' }, { e: '🧼', t: '洗手' }, { e: '🛁', t: '洗澡' },
+      { e: '😴', t: '睡觉' }, { e: '🪥', t: '刷牙' }, { e: '👕', t: '穿衣服' }, { e: '🚪', t: '出去' },
+    ]},
+    { id: 'feel', name: '感受', cls: 'cat-feel', cards: [
+      { e: '😄', t: '开心' }, { e: '😢', t: '难过' }, { e: '😠', t: '生气' }, { e: '🤕', t: '痛' },
+      { e: '🥱', t: '累了' }, { e: '😨', t: '害怕' }, { e: '❤️', t: '喜欢' },
+    ]},
+  ];
+
+  let deck;
+  try { deck = JSON.parse(localStorage.getItem(STORE_DECK)) || null; } catch (e) { deck = null; }
+  if (!deck || !Array.isArray(deck)) deck = JSON.parse(JSON.stringify(DEFAULT_DECK));
+
+  function newId() { return 'c' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+  let migrated = false;
+  deck.forEach(cat => cat.cards.forEach(c => { if (!c.id) { c.id = newId(); migrated = true; } }));
+  if (migrated) localStorage.setItem(STORE_DECK, JSON.stringify(deck));
+
+  let rate = parseFloat(localStorage.getItem(STORE_RATE)) || 0.85;
+  let activeCat = deck[0].id;
+  let sentence = [];
+
+  /* ---------- media store (IndexedDB: photos + recordings) ---------- */
+  const mediaMap = new Map();
+  const dbp = new Promise((resolve) => {
+    if (!('indexedDB' in window)) { resolve(null); return; }
+    const req = indexedDB.open('ddshuo-media', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('media');
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => resolve(null);
+  });
+  async function hydrateMedia() {
+    const db = await dbp;
+    if (!db) return;
+    await new Promise((resolve) => {
+      const cur = db.transaction('media').objectStore('media').openCursor();
+      cur.onsuccess = () => {
+        const c = cur.result;
+        if (c) { mediaMap.set(c.key, c.value); c.continue(); } else resolve();
+      };
+      cur.onerror = () => resolve();
+    });
+  }
+  async function mediaSave(id) {
+    const db = await dbp;
+    if (!db) return;
+    const val = mediaMap.get(id);
+    await new Promise((resolve) => {
+      const os = db.transaction('media', 'readwrite').objectStore('media');
+      const r = val ? os.put(val, id) : os.delete(id);
+      r.onsuccess = resolve; r.onerror = resolve;
+    });
+  }
+  function mediaOf(id) { return mediaMap.get(id) || {}; }
+
+  /* ---------- speech ---------- */
+  let zhVoice = null;
+  function pickVoice() {
+    if (typeof speechSynthesis === 'undefined') return;
+    const vs = speechSynthesis.getVoices();
+    zhVoice =
+      vs.find(v => /zh[-_]CN/i.test(v.lang) && /siri|premium|enhanced|神经|natural/i.test(v.name)) ||
+      vs.find(v => /zh[-_]CN/i.test(v.lang)) ||
+      vs.find(v => /^zh/i.test(v.lang)) || null;
+    const info = document.getElementById('voiceInfo');
+    if (info) info.textContent = zhVoice
+      ? '当前语音：' + zhVoice.name + '（' + zhVoice.lang + '）'
+      : '未检测到中文语音，将使用系统默认语音。苹果设备可在 设置→辅助功能→朗读内容→声音 中下载更自然的中文语音；安卓可在 设置→系统→文字转语音 中安装中文语音引擎。';
+  }
+  pickVoice();
+  if (typeof speechSynthesis !== 'undefined') speechSynthesis.onvoiceschanged = pickVoice;
+
+  const speakBtn = document.getElementById('speakBtn');
+  let currentAudio = null;
+  function stopAll() {
+    if (typeof speechSynthesis !== 'undefined') speechSynthesis.cancel();
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    speakBtn.classList.remove('talking');
+  }
+  function speakTTS(text) {
+    return new Promise((resolve) => {
+      if (typeof speechSynthesis === 'undefined') { resolve(); return; }
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = 'zh-CN';
+      if (zhVoice) u.voice = zhVoice;
+      u.rate = rate;
+      u.onend = resolve; u.onerror = resolve;
+      speechSynthesis.speak(u);
+    });
+  }
+  function playRecording(dataURI) {
+    return new Promise((resolve) => {
+      const a = new Audio(dataURI);
+      currentAudio = a;
+      a.onended = resolve; a.onerror = resolve;
+      a.play().catch(resolve);
+    });
+  }
+  async function playCard(card) {
+    const m = mediaOf(card.id);
+    speakBtn.classList.add('talking');
+    if (m.audio) await playRecording(m.audio);
+    else await speakTTS(card.t);
+    speakBtn.classList.remove('talking');
+  }
+  async function playSentence(cards) {
+    stopAll();
+    speakBtn.classList.add('talking');
+    for (const c of cards) {
+      const m = mediaOf(c.id);
+      if (m.audio) await playRecording(m.audio);
+      else await speakTTS(c.t);
+      await new Promise(r => setTimeout(r, 120));
+    }
+    speakBtn.classList.remove('talking');
+  }
+
+  /* ---------- render ---------- */
+  const tabsEl = document.getElementById('tabs');
+  const gridEl = document.getElementById('grid');
+  const stripEl = document.getElementById('strip');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function faceHTML(card, cls) {
+    const m = mediaOf(card.id);
+    if (m.photo) {
+      const img = document.createElement('img');
+      img.className = 'ph'; img.alt = card.t; img.src = m.photo;
+      return img;
+    }
+    const s = document.createElement('span');
+    s.className = 'e'; s.textContent = card.e;
+    return s;
+  }
+
+  function renderTabs() {
+    tabsEl.innerHTML = '';
+    deck.forEach(cat => {
+      const b = document.createElement('button');
+      b.className = 'tab ' + cat.cls + (cat.id === activeCat ? ' active' : '');
+      const icon = CAT_ICONS[cat.id] || '🔖';
+      b.innerHTML = '<span class="ti">' + icon + '</span><span></span>';
+      b.querySelector('span:last-child').textContent = cat.name;
+      b.onclick = () => { activeCat = cat.id; renderTabs(); renderGrid(); };
+      tabsEl.appendChild(b);
+    });
+  }
+
+  function renderGrid() {
+    gridEl.innerHTML = '';
+    const cat = deck.find(c => c.id === activeCat) || deck[0];
+    cat.cards.forEach((card, i) => {
+      const d = document.createElement('button');
+      d.className = 'card ' + cat.cls;
+      if (!reduceMotion) d.style.animationDelay = Math.min(i * 22, 240) + 'ms';
+      const badge = document.createElement('span');
+      badge.className = 'badge';
+      badge.appendChild(faceHTML(card));
+      const t = document.createElement('span');
+      t.className = 't'; t.textContent = card.t;
+      d.appendChild(badge); d.appendChild(t);
+      d.onclick = () => {
+        stopAll();
+        playCard(card);
+        d.classList.add('speaking');
+        setTimeout(() => d.classList.remove('speaking'), 600);
+        if (sentence.length < 6) { sentence.push({ id: card.id, e: card.e, t: card.t, cls: cat.cls }); renderStrip(); }
+      };
+      gridEl.appendChild(d);
+    });
+  }
+
+  function renderStrip() {
+    stripEl.innerHTML = '';
+    if (!sentence.length) {
+      stripEl.innerHTML = '<span class="hint">👇 点图卡，说句话</span>';
+      return;
+    }
+    sentence.forEach((card, i) => {
+      const c = document.createElement('button');
+      c.className = 'chip ' + (card.cls || '');
+      c.appendChild(faceHTML(card));
+      const t = document.createElement('span');
+      t.className = 't'; t.textContent = card.t;
+      c.appendChild(t);
+      c.onclick = () => { sentence.splice(i, 1); renderStrip(); };
+      stripEl.appendChild(c);
+    });
+    stripEl.scrollLeft = stripEl.scrollWidth;
+  }
+
+  speakBtn.onclick = () => { if (sentence.length) playSentence(sentence.slice()); };
+  document.getElementById('undoBtn').onclick = () => { sentence.pop(); renderStrip(); };
+  document.getElementById('clearBtn').onclick = () => { sentence = []; renderStrip(); };
+
+  /* ---------- parent lock (hold 1.5s) ---------- */
+  const lockBtn = document.getElementById('lockBtn');
+  const settingsEl = document.getElementById('settings');
+  let holdTimer = null, holdStart = 0, raf = null;
+  function holdBegin(ev) {
+    ev.preventDefault();
+    holdStart = performance.now();
+    const tick = () => {
+      const p = Math.min(100, (performance.now() - holdStart) / 15);
+      lockBtn.style.setProperty('--p', p);
+      if (p < 100) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    holdTimer = setTimeout(openSettings, 1500);
+  }
+  function holdEnd() {
+    clearTimeout(holdTimer); cancelAnimationFrame(raf);
+    lockBtn.style.setProperty('--p', 0);
+  }
+  lockBtn.addEventListener('pointerdown', holdBegin);
+  lockBtn.addEventListener('pointerup', holdEnd);
+  lockBtn.addEventListener('pointerleave', holdEnd);
+  lockBtn.addEventListener('pointercancel', holdEnd);
+
+  function openSettings() {
+    holdEnd();
+    settingsEl.classList.add('open');
+    renderManage(); renderAddCat();
+    document.getElementById('rate').value = rate;
+    pickVoice();
+  }
+  document.getElementById('closeSet').onclick = () => settingsEl.classList.remove('open');
+
+  /* ---------- settings logic ---------- */
+  document.getElementById('rate').oninput = e => {
+    rate = parseFloat(e.target.value);
+    localStorage.setItem(STORE_RATE, rate);
+  };
+  document.getElementById('testVoice').onclick = () => { stopAll(); speakTTS('我要喝水'); };
+
+  function saveDeck() { localStorage.setItem(STORE_DECK, JSON.stringify(deck)); }
+
+  function renderAddCat() {
+    const sel = document.getElementById('addCat');
+    sel.innerHTML = '';
+    deck.forEach(cat => {
+      const o = document.createElement('option');
+      o.value = cat.id; o.textContent = cat.name;
+      sel.appendChild(o);
+    });
+  }
+
+  document.getElementById('addBtn').onclick = () => {
+    const catId = document.getElementById('addCat').value;
+    const e = document.getElementById('addEmoji').value.trim() || '⭐';
+    const t = document.getElementById('addText').value.trim();
+    if (!t) return;
+    const cat = deck.find(c => c.id === catId);
+    const card = { e, t, id: newId() };
+    cat.cards.push(card);
+    document.getElementById('addEmoji').value = '';
+    document.getElementById('addText').value = '';
+    saveDeck(); renderManage(); renderGrid();
+    stopAll(); speakTTS(t);
+    openEditor(card);
+  };
+
+  function renderManage() {
+    const m = document.getElementById('manage');
+    m.innerHTML = '';
+    deck.forEach(cat => {
+      const wrap = document.createElement('div');
+      wrap.className = 'manage-cat';
+      const label = document.createElement('div');
+      label.className = 'cat-label';
+      label.textContent = (CAT_ICONS[cat.id] || '🔖') + ' ' + cat.name;
+      wrap.appendChild(label);
+      const list = document.createElement('div');
+      list.className = 'manage-cards';
+      cat.cards.forEach((card, i) => {
+        const md = mediaOf(card.id);
+        const chip = document.createElement('span');
+        chip.className = 'm-chip';
+        const open = document.createElement('span');
+        open.className = 'm-open';
+        if (md.photo) {
+          const img = document.createElement('img');
+          img.className = 'ph'; img.src = md.photo; img.alt = '';
+          open.appendChild(img);
+        } else {
+          const em = document.createElement('span');
+          em.textContent = card.e;
+          open.appendChild(em);
+        }
+        const txt = document.createElement('span');
+        txt.textContent = card.t;
+        open.appendChild(txt);
+        if (md.audio) {
+          const rec = document.createElement('span');
+          rec.className = 'has-rec'; rec.textContent = '🎤';
+          open.appendChild(rec);
+        }
+        open.onclick = () => openEditor(card);
+        const del = document.createElement('button');
+        del.className = 'del';
+        del.textContent = '×';
+        del.setAttribute('aria-label', '删除 ' + card.t);
+        del.onclick = () => {
+          cat.cards.splice(i, 1);
+          mediaMap.delete(card.id); mediaSave(card.id);
+          saveDeck(); renderManage(); renderGrid();
+        };
+        chip.appendChild(open); chip.appendChild(del);
+        list.appendChild(chip);
+      });
+      wrap.appendChild(list);
+      m.appendChild(wrap);
+    });
+  }
+
+  document.getElementById('resetBtn').onclick = async () => {
+    if (!confirm('确定恢复默认词库吗？您添加的图卡、照片和录音都会被删除。')) return;
+    for (const id of [...mediaMap.keys()]) { mediaMap.delete(id); await mediaSave(id); }
+    deck = JSON.parse(JSON.stringify(DEFAULT_DECK));
+    deck.forEach(cat => cat.cards.forEach(c => { c.id = newId(); }));
+    activeCat = deck[0].id;
+    saveDeck(); renderManage(); renderAddCat(); renderTabs(); renderGrid();
+  };
+
+  /* ---------- card editor: photo + recording ---------- */
+  const editorEl = document.getElementById('editor');
+  const edBadge = document.getElementById('edBadge');
+  const edWord = document.getElementById('edWord');
+  const edStatus = document.getElementById('edStatus');
+  const photoFile = document.getElementById('photoFile');
+  const photoDelBtn = document.getElementById('photoDelBtn');
+  const playRecBtn = document.getElementById('playRecBtn');
+  const recDelBtn = document.getElementById('recDelBtn');
+  const recBtn = document.getElementById('recBtn');
+  const edText = document.getElementById('edText');
+  let edCard = null;
+
+  function refreshEditor() {
+    if (!edCard) return;
+    const m = mediaOf(edCard.id);
+    edBadge.innerHTML = '';
+    edBadge.appendChild(faceHTML(edCard));
+    edWord.textContent = edCard.t;
+    edStatus.textContent = (m.photo ? '已有照片' : '暂无照片') + ' · ' + (m.audio ? '已录真人语音' : '机器朗读');
+    photoDelBtn.style.display = m.photo ? '' : 'none';
+    playRecBtn.style.display = m.audio ? '' : 'none';
+    recDelBtn.style.display = m.audio ? '' : 'none';
+    edText.value = edCard.t;
+  }
+  function openEditor(card) {
+    edCard = card;
+    refreshEditor();
+    editorEl.classList.add('open');
+  }
+  document.getElementById('edDone').onclick = () => {
+    editorEl.classList.remove('open');
+    renderManage(); renderGrid(); renderStrip();
+  };
+  editorEl.addEventListener('click', (e) => {
+    if (e.target === editorEl) document.getElementById('edDone').click();
+  });
+
+  /* photo */
+  document.getElementById('photoBtn').onclick = () => photoFile.click();
+  photoFile.onchange = async () => {
+    const f = photoFile.files && photoFile.files[0];
+    photoFile.value = '';
+    if (!f || !edCard) return;
+    try {
+      const dataURI = await compressImage(f);
+      const m = mediaOf(edCard.id);
+      mediaMap.set(edCard.id, { ...m, photo: dataURI });
+      await mediaSave(edCard.id);
+      refreshEditor();
+    } catch (err) {
+      edStatus.textContent = '照片处理失败，换一张试试';
+    }
+  };
+  photoDelBtn.onclick = async () => {
+    if (!edCard) return;
+    const m = mediaOf(edCard.id);
+    delete m.photo;
+    if (Object.keys(m).length) mediaMap.set(edCard.id, m); else mediaMap.delete(edCard.id);
+    await mediaSave(edCard.id);
+    refreshEditor();
+  };
+  async function compressImage(file) {
+    let bmp;
+    try {
+      bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+    } catch (e) {
+      bmp = await new Promise((resolve, reject) => {
+        const url = URL.createObjectURL(file);
+        const img = new Image();
+        img.onload = () => { URL.revokeObjectURL(url); resolve(img); };
+        img.onerror = reject;
+        img.src = url;
+      });
+    }
+    const w = bmp.width, h = bmp.height;
+    const side = Math.min(w, h);
+    const target = 320;
+    const canvas = document.createElement('canvas');
+    canvas.width = target; canvas.height = target;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(bmp, (w - side) / 2, (h - side) / 2, side, side, 0, 0, target, target);
+    return canvas.toDataURL('image/jpeg', 0.78);
+  }
+
+  /* recording — hold to record, like WeChat voice */
+  let recorder = null, recChunks = [], recStream = null, recStartAt = 0;
+  function recMime() {
+    if (!window.MediaRecorder) return null;
+    for (const m of ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/aac']) {
+      if (MediaRecorder.isTypeSupported(m)) return m;
+    }
+    return '';
+  }
+  async function recStart(ev) {
+    ev.preventDefault();
+    if (recorder) return;
+    if (!navigator.mediaDevices || !window.MediaRecorder) {
+      edStatus.textContent = '此浏览器不支持录音，请更新系统浏览器';
+      return;
+    }
+    try {
+      recStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (e) {
+      edStatus.textContent = '需要麦克风权限才能录音，请在浏览器设置中允许';
+      return;
+    }
+    const mime = recMime();
+    recorder = new MediaRecorder(recStream, mime ? { mimeType: mime } : undefined);
+    recChunks = [];
+    recStartAt = performance.now();
+    recorder.ondataavailable = e => { if (e.data && e.data.size) recChunks.push(e.data); };
+    recorder.onstop = async () => {
+      const dur = performance.now() - recStartAt;
+      const blob = new Blob(recChunks, { type: recorder.mimeType || 'audio/webm' });
+      recStream.getTracks().forEach(t => t.stop());
+      recorder = null; recStream = null;
+      recBtn.classList.remove('recording');
+      recBtn.textContent = '🎤 按住录音';
+      if (dur < 400 || !blob.size || !edCard) {
+        if (dur < 400) edStatus.textContent = '太短了，按住说完再松开';
+        return;
+      }
+      const dataURI = await new Promise((resolve) => {
+        const fr = new FileReader();
+        fr.onload = () => resolve(fr.result);
+        fr.readAsDataURL(blob);
+      });
+      const m = mediaOf(edCard.id);
+      mediaMap.set(edCard.id, { ...m, audio: dataURI });
+      await mediaSave(edCard.id);
+      refreshEditor();
+      stopAll(); playRecording(dataURI);
+    };
+    recorder.start();
+    recBtn.classList.add('recording');
+    recBtn.textContent = '🔴 正在录音…松开完成';
+  }
+  function recStop() {
+    if (recorder && recorder.state === 'recording') recorder.stop();
+  }
+  recBtn.addEventListener('pointerdown', recStart);
+  recBtn.addEventListener('pointerup', recStop);
+  recBtn.addEventListener('pointerleave', recStop);
+  recBtn.addEventListener('pointercancel', recStop);
+
+  playRecBtn.onclick = () => {
+    if (!edCard) return;
+    const m = mediaOf(edCard.id);
+    if (m.audio) { stopAll(); playRecording(m.audio); }
+  };
+  recDelBtn.onclick = async () => {
+    if (!edCard) return;
+    const m = mediaOf(edCard.id);
+    delete m.audio;
+    if (Object.keys(m).length) mediaMap.set(edCard.id, m); else mediaMap.delete(edCard.id);
+    await mediaSave(edCard.id);
+    refreshEditor();
+  };
+
+  /* word text edit */
+  document.getElementById('edTextSave').onclick = () => {
+    if (!edCard) return;
+    const t = edText.value.trim();
+    if (!t) return;
+    edCard.t = t;
+    saveDeck(); refreshEditor();
+  };
+
+  /* ---------- boot ---------- */
+  (async () => {
+    await hydrateMedia();
+    renderTabs(); renderGrid(); renderStrip();
+  })();
+</script>
+<script>
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    navigator.serviceWorker.register('./sw.js').catch(function () {});
+  }
+</script>
+</body>
+</html>
